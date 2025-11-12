@@ -14,6 +14,7 @@ class AccessLevel(str, enum.Enum):
     PUBLIC = "public"
     VERIFIED_ONLY = "verified_only"
     PRE_LAUNCH = "pre_launch"
+    INVESTOR_ONLY = "investor_only"
 
 
 class ContactVisibility(str, enum.Enum):
@@ -54,11 +55,12 @@ class Project(BaseModel):
     tags = Column(JSONB, nullable=True)
     
     # Visibility and access control
-    access_level = Column(SQLEnum(AccessLevel, name='access_level_enum'), default=AccessLevel.PUBLIC, server_default='public', nullable=False)
-    contact_visibility = Column(SQLEnum(ContactVisibility, name='contact_visibility_enum'), default=ContactVisibility.HIDDEN, server_default='hidden', nullable=False)
+    access_level = Column(SQLEnum(AccessLevel, name='access_level_enum', values_callable=lambda x: [e.value for e in x]), default=AccessLevel.PUBLIC, server_default='public', nullable=False)
+    contact_visibility = Column(SQLEnum(ContactVisibility, name='contact_visibility_enum', values_callable=lambda x: [e.value for e in x]), default=ContactVisibility.HIDDEN, server_default='hidden', nullable=False)
     visibility_score = Column(Numeric(5, 2), default=0, server_default='0', nullable=False, index=True)
     
-    status = Column(SQLEnum(ProjectStatus, name='project_status_enum'), default=ProjectStatus.DRAFT, server_default='draft', nullable=False, index=True)
+    status = Column(SQLEnum(ProjectStatus, name='project_status_enum', values_callable=lambda x: [e.value for e in x]), default=ProjectStatus.DRAFT, server_default='draft', nullable=False, index=True)
+    published_at = Column(DateTime, nullable=True)
 
     # Relationships
     developer = relationship("User", foreign_keys=[developer_id], back_populates="projects")

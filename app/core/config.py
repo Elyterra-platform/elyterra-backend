@@ -36,6 +36,24 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
 
+    # Cloudflare R2 Storage Configuration
+    r2_bucket_name: str = "CHANGEME_your-bucket-name"
+    r2_region: str = "auto"
+    r2_access_key: str = "CHANGEME_your-r2-access-key"
+    r2_secret_key: str = "CHANGEME_your-r2-secret-key"
+    r2_endpoint_url: str = "CHANGEME_https://your-account-id.r2.cloudflarestorage.com"
+
+    # Document Settings
+    signed_url_expiry_seconds: int = 3600  # 1 hour
+    max_document_size_mb: int = 50
+
+    # API Logging Configuration
+    api_log_retention_days: int = 365  # 12 months minimum for legal compliance
+    log_sensitive_endpoints: bool = True
+
+    # Project Configuration
+    require_project_approval: bool = False  # Set to True to require admin approval before publishing
+
     @property
     def cors_origins_list(self) -> List[str]:
         """Convert CORS origins string to list"""

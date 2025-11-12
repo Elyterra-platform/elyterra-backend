@@ -8,9 +8,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 from app.core.config import settings
 from app.core.database import check_database_connection
+from app.middleware.request_logger import log_api_request
 
 # Import controllers/routers
-from app.controllers import user_controller, auth_controller
+from app.controllers import user_controller, auth_controller, project_controller, document_controller, lead_controller
 
 # Create FastAPI app
 app = FastAPI(
@@ -30,9 +31,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# API Request Logging Middleware
+app.middleware("http")(log_api_request)
+
 # Include routers/controllers
 app.include_router(auth_controller.router, prefix="/api")
 app.include_router(user_controller.router, prefix="/api")
+app.include_router(project_controller.router)
+app.include_router(document_controller.router)
+app.include_router(lead_controller.router)
 
 # Root endpoints
 @app.get("/")

@@ -11,9 +11,15 @@ import enum
 
 class DocType(str, enum.Enum):
     """Document type enumeration"""
-    TEASER = "teaser"
     IM = "IM"
+    OM = "OM"
+    PITCH_DECK = "pitch_deck"
     FINANCIAL_MODEL = "financial_model"
+    LEGAL = "legal"
+    BROCHURE = "brochure"
+    FLOOR_PLANS = "floor_plans"
+    PHOTOS = "photos"
+    TEASER = "teaser"
     PERMIT = "permit"
     RENDER_PDF = "render_pdf"
     OTHER = "other"
@@ -25,11 +31,11 @@ class ProjectDocument(BaseModel):
     __tablename__ = "project_documents"
 
     project_id = Column(Integer, ForeignKey('projects.id', ondelete='CASCADE'), nullable=False, index=True)
+    file_url = Column(String(1000), nullable=False)  # Full URL to R2 object
     doc_type = Column(SQLEnum(DocType, name='doc_type_enum'), nullable=False)
-    file_url = Column(String(1000), nullable=False)
     access_level = Column(SQLEnum(AccessLevel, name='access_level_enum', create_type=False), nullable=False)
-    checksum = Column(String(64), nullable=True)  # SHA-256 for integrity verification
     description = Column(Text, nullable=True)
+    checksum = Column(String(255), nullable=True)  # Checksum for integrity verification
 
     # Relationships
     project = relationship("Project", back_populates="documents")
